@@ -1,0 +1,7 @@
+POST https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyAmVrXD4DDk7bROt8OzfEpTzpodVznpmX8
+Content-Type: application/json
+
+{
+  "email":"langdonhp435@gamil.com",
+  "password":"123456"
+}
