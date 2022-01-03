@@ -15,8 +15,11 @@ class PlaceCard extends StatelessWidget {
       child: Stack(
         alignment: Alignment.bottomLeft,
         children: [
-          _BackgroundImage(
-            url: place.img,
+          Hero(
+            tag: place.id!,
+            child: _BackgroundImage(
+              url: place.img,
+            ),
           ),
           _ProductDetails(
             title: place.name,

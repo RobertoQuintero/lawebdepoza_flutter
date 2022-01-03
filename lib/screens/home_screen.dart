@@ -29,7 +29,7 @@ class HomeScreen extends StatelessWidget {
               onTap: () {
                 placesService.selectedPlace =
                     placesService.places[index].copy();
-                Navigator.pushNamed(context, 'product');
+                Navigator.pushNamed(context, 'place');
               },
               child: PlaceCard(
                 place: placesService.places[index],

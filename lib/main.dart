@@ -33,12 +33,16 @@ class MyApp extends StatelessWidget {
         'home': (_) => HomeScreen(),
         'product': (_) => ProductScreen(),
         'checking': (_) => CheckAuthScreen(),
+        'place': (_) => PlaceScreen(),
       },
       scaffoldMessengerKey: NotificationsService.messengerKey,
       theme: ThemeData.light().copyWith(
-          scaffoldBackgroundColor: Colors.grey[300],
+          scaffoldBackgroundColor: Colors.white,
           appBarTheme: AppBarTheme(
-              elevation: 0, color: Colors.indigo, centerTitle: true),
+              brightness: Brightness.dark,
+              elevation: 0,
+              color: Colors.indigo,
+              centerTitle: true),
           floatingActionButtonTheme: FloatingActionButtonThemeData(
               backgroundColor: Colors.indigo, elevation: 0)),
     );
