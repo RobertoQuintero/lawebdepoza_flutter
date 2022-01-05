@@ -8,12 +8,12 @@ class Category {
   Category({
     required this.id,
     required this.name,
-    required this.user,
+    this.user,
   });
 
   String id;
   String name;
-  String user;
+  String? user;
 
   factory Category.fromJson(String str) => Category.fromMap(json.decode(str));
 

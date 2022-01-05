@@ -14,6 +14,7 @@ class AppState extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => AuthService()),
         ChangeNotifierProvider(create: (_) => ProductsService()),
         ChangeNotifierProvider(create: (_) => PlacesService()),
+        ChangeNotifierProvider(create: (_) => CategoryService()),
       ],
       child: MyApp(),
     );
@@ -34,6 +35,7 @@ class MyApp extends StatelessWidget {
         'product': (_) => ProductScreen(),
         'checking': (_) => CheckAuthScreen(),
         'place': (_) => PlaceScreen(),
+        'add-category': (_) => AddCategoryScreen()
       },
       scaffoldMessengerKey: NotificationsService.messengerKey,
       theme: ThemeData.light().copyWith(

@@ -21,6 +21,13 @@ class HomeScreen extends StatelessWidget {
               Navigator.pushReplacementNamed(context, 'login');
             },
             icon: Icon(Icons.login_outlined)),
+        actions: [
+          IconButton(
+              onPressed: () {
+                Navigator.pushNamed(context, 'add-category');
+              },
+              icon: Icon(Icons.add_box)),
+        ],
       ),
       body: ListView.builder(
           physics: BouncingScrollPhysics(),

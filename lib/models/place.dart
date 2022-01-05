@@ -4,6 +4,8 @@
 
 import 'dart:convert';
 
+import 'package:lawebdepoza_mobile/models/models.dart';
+
 class Place {
   Place({
     required this.name,
@@ -35,7 +37,7 @@ class Place {
   int? rating;
   int? totalRating;
   int? quantityVoting;
-  String category;
+  Category category;
   String user;
   String? id;
 
@@ -56,7 +58,7 @@ class Place {
         rating: json["rating"],
         totalRating: json["totalRating"],
         quantityVoting: json["quantityVoting"],
-        category: json["category"],
+        category: Category.fromMap(json["category"]),
         user: json["user"],
         id: json["_id"],
       );
@@ -74,7 +76,7 @@ class Place {
         "rating": rating,
         "totalRating": totalRating,
         "quantityVoting": quantityVoting,
-        "category": category,
+        "category": category.toMap(),
         "user": user,
         "_id": id,
       };
@@ -104,8 +106,8 @@ class Coordinates {
     this.lng = 0,
   });
 
-  int lat;
-  int lng;
+  double lat;
+  double lng;
 
   factory Coordinates.fromJson(String str) =>
       Coordinates.fromMap(json.decode(str));
