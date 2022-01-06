@@ -7,6 +7,7 @@ class AddCategoryScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final categoryService = Provider.of<CategoryService>(context);
+
     return Scaffold(
         appBar: AppBar(
           title: Text('Agregar Categoría'),
@@ -19,13 +20,15 @@ class AddCategoryScreen extends StatelessWidget {
               child: Column(
                 children: [
                   TextFormField(
+                    initialValue: categoryService.selectedCategory.name,
                     autocorrect: false,
                     keyboardType: TextInputType.text,
                     decoration: InputDecorations.authInputDecoration(
                       hintText: 'Comida',
                       labelText: 'Categoría',
                     ),
-                    onChanged: (value) => categoryService.category = value,
+                    onChanged: (value) =>
+                        categoryService.selectedCategory.name = value,
                     validator: (value) {
                       return value != null && value.length > 2
                           ? null
@@ -40,12 +43,12 @@ class AddCategoryScreen extends StatelessWidget {
                           borderRadius: BorderRadius.circular(10)),
                       disabledColor: Colors.grey,
                       elevation: 0,
-                      color: Colors.deepPurple,
+                      color: Theme.of(context).primaryColor,
                       child: Container(
                         padding:
                             EdgeInsets.symmetric(horizontal: 80, vertical: 15),
                         child: Text(
-                          categoryService.isLoading ? 'Espere...' : 'Agregar',
+                          categoryService.isLoading ? 'Espere...' : 'Guardar',
                           style: TextStyle(color: Colors.white),
                         ),
                       ),
@@ -53,8 +56,9 @@ class AddCategoryScreen extends StatelessWidget {
                           ? null
                           : () async {
                               if (!categoryService.isValidForm()) return;
-                              categoryService.createCategory();
-                            })
+                              await categoryService.createOrUpdate();
+                              Navigator.pop(context);
+                            }),
                 ],
               )),
         ));

@@ -23,7 +23,6 @@ class PlacesService extends ChangeNotifier {
       final url = Uri.https(_baseUrl, '/api/places');
       final resp = await http.get(url);
       final Map<String, dynamic> decodedData = json.decode(resp.body);
-      print(decodedData);
       for (var item in decodedData['places']) {
         final place = Place.fromMap(item);
         places.add(place);

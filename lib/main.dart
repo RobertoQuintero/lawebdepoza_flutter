@@ -35,10 +35,12 @@ class MyApp extends StatelessWidget {
         'product': (_) => ProductScreen(),
         'checking': (_) => CheckAuthScreen(),
         'place': (_) => PlaceScreen(),
-        'add-category': (_) => AddCategoryScreen()
+        'add-category': (_) => AddCategoryScreen(),
+        'categories': (_) => CategoriesScreen()
       },
       scaffoldMessengerKey: NotificationsService.messengerKey,
       theme: ThemeData.light().copyWith(
+          primaryColor: Colors.indigo,
           scaffoldBackgroundColor: Colors.white,
           appBarTheme: AppBarTheme(
               brightness: Brightness.dark,

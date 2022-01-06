@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:lawebdepoza_mobile/models/models.dart';
 import 'package:lawebdepoza_mobile/screens/screens.dart';
 import 'package:lawebdepoza_mobile/services/services.dart';
 import 'package:lawebdepoza_mobile/widgets/widgets.dart';
@@ -8,13 +7,13 @@ import 'package:provider/provider.dart';
 class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final productService = Provider.of<ProductsService>(context);
+    // final productService = Provider.of<ProductsService>(context);
     final authService = Provider.of<AuthService>(context, listen: false);
     final placesService = Provider.of<PlacesService>(context);
-    if (productService.isLoading) return LoadingScreen();
+    if (placesService.isLoading) return LoadingScreen();
     return Scaffold(
       appBar: AppBar(
-        title: Text('Productos'),
+        title: Text('Places'),
         leading: IconButton(
             onPressed: () {
               authService.logout();
@@ -23,9 +22,7 @@ class HomeScreen extends StatelessWidget {
             icon: Icon(Icons.login_outlined)),
         actions: [
           IconButton(
-              onPressed: () {
-                Navigator.pushNamed(context, 'add-category');
-              },
+              onPressed: () => Navigator.pushNamed(context, 'categories'),
               icon: Icon(Icons.add_box)),
         ],
       ),
@@ -43,9 +40,9 @@ class HomeScreen extends StatelessWidget {
               ))),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          productService.selectedProduct =
-              new Product(available: false, name: '', price: 0);
-          Navigator.pushNamed(context, 'product');
+          // productService.selectedProduct =
+          //     new Product(available: false, name: '', price: 0);
+          // Navigator.pushNamed(context, 'product');
         },
         child: Icon(Icons.add),
       ),
