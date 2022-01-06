@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lawebdepoza_mobile/services/notifications_service.dart';
 import 'package:lawebdepoza_mobile/services/services.dart';
 import 'package:lawebdepoza_mobile/ui/input_decorations.dart';
 import 'package:provider/provider.dart';
@@ -56,7 +57,11 @@ class AddCategoryScreen extends StatelessWidget {
                           ? null
                           : () async {
                               if (!categoryService.isValidForm()) return;
-                              await categoryService.createOrUpdate();
+                              final resp =
+                                  await categoryService.createOrUpdate();
+                              if (resp != null)
+                                NotificationsService.showSnackbar(resp);
+
                               Navigator.pop(context);
                             }),
                 ],

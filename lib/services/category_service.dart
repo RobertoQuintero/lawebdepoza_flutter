@@ -10,12 +10,19 @@ class CategoryService extends ChangeNotifier {
   List<Category> categories = [];
   late Category selectedCategory;
   late int total;
+  bool _isLoadingScroll = false;
   bool _isLoading = false;
   String _baseUrl = 'lawebdepoza.herokuapp.com';
 
   bool get isLoading => this._isLoading;
   set isLoading(bool value) {
     this._isLoading = value;
+    notifyListeners();
+  }
+
+  bool get isLoadingScroll => this._isLoadingScroll;
+  set isLoadingScroll(bool value) {
+    this._isLoadingScroll = value;
     notifyListeners();
   }
 
@@ -29,11 +36,10 @@ class CategoryService extends ChangeNotifier {
 
   Future createCategory() async {
     final Map<String, dynamic> categoryData = {
-      'name': selectedCategory.name,
+      'name': selectedCategory.name.toUpperCase(),
     };
-
     isLoading = true;
-    notifyListeners();
+
     try {
       final url = Uri.https(_baseUrl, '/api/categories');
       final resp =
@@ -42,22 +48,22 @@ class CategoryService extends ChangeNotifier {
         'x-token': await storage.read(key: 'token') ?? ''
       });
       final Map<String, dynamic> decodedData = json.decode(resp.body);
-      if (decodedData.containsKey('category')) {
-        final newCategory = Category.fromMap(decodedData['category']);
-        this.categories.add(newCategory);
-        isLoading = false;
-        notifyListeners();
-      } else {
-        print(decodedData['msg']);
+      if (decodedData.containsKey('msg')) {
+        return decodedData['msg'];
       }
+      final newCategory = Category.fromMap(decodedData['category']);
+      this.categories.add(newCategory);
+      isLoading = false;
+      return 'Categoría creada';
     } catch (e) {
       print(e);
+      isLoading = false;
+      return 'Error al crear categoría';
     }
   }
 
   Future getCategories() async {
     isLoading = true;
-    notifyListeners();
     try {
       final url = Uri.https(_baseUrl, '/api/categories');
       final resp = await http.get(url);
@@ -68,20 +74,47 @@ class CategoryService extends ChangeNotifier {
           final tempCategory = Category.fromMap(item);
           this.categories.add(tempCategory);
         });
-        print(categories);
       }
-      isLoading = false;
-      notifyListeners();
     } catch (e) {
       print(e);
-      isLoading = false;
-      notifyListeners();
     }
+    isLoading = false;
   }
 
-  Future deleteCategory() async {
+  Future getCategoriesByScrolling() async {
+    if (isLoadingScroll) return;
+    if (this.categories.length >= total) {
+      print('limite alcanzado');
+      return;
+    }
+    isLoadingScroll = true;
+    print(total);
+    print(this.categories.length);
+    try {
+      final url = Uri.https(_baseUrl, '/api/categories',
+          {'from': '${this.categories.length}', 'limit': '5'});
+      final resp = await http.get(url);
+      final Map<String, dynamic> decodedData = json.decode(resp.body);
+      print(decodedData);
+      print('hola');
+      if (decodedData.containsKey('categories')) {
+        decodedData['categories'].forEach((item) {
+          final tempCategory = Category.fromMap(item);
+          this.categories.add(tempCategory);
+        });
+      }
+      if (decodedData.containsKey('msg')) {
+        print(decodedData['msg']);
+      }
+    } catch (e) {
+      print('fail');
+      print(e);
+    }
+    isLoadingScroll = false;
+  }
+
+  Future<String> deleteCategory() async {
     isLoading = true;
-    notifyListeners();
     try {
       final url = Uri.https(_baseUrl, '/api/categories/${selectedCategory.id}');
       await http.delete(url,
@@ -89,41 +122,41 @@ class CategoryService extends ChangeNotifier {
       this.categories = [
         ...this.categories.where((element) => element.id != selectedCategory.id)
       ];
+      isLoading = false;
+      return 'Categoría Eliminada';
     } catch (e) {
       print(e);
+      isLoading = false;
+      return 'Error al eliminar categoría';
     }
-    isLoading = false;
-    notifyListeners();
   }
 
-  Future updateCategory() async {
+  Future<String> updateCategory() async {
     final Map<String, dynamic> categoryData = {
-      'name': selectedCategory.name,
+      'name': selectedCategory.name.toUpperCase(),
     };
-    isLoading = true;
-    notifyListeners();
 
     try {
       final url = Uri.https(_baseUrl, '/api/categories/${selectedCategory.id}');
-      final resp =
-          await http.put(url, body: json.encode(categoryData), headers: {
+      await http.put(url, body: json.encode(categoryData), headers: {
         'Content-Type': 'application/json',
         'x-token': await storage.read(key: 'token') ?? ''
       });
-      final Map<String, dynamic> decodedData = json.decode(resp.body);
-      print(decodedData);
-      isLoading = true;
-      notifyListeners();
+
+      final index = this
+          .categories
+          .indexWhere((element) => element.id == selectedCategory.id);
+      this.categories[index] = selectedCategory;
+      return 'Categoría actualizada';
     } catch (e) {
       print(e);
+      return 'Error al actualizar categoría';
     }
   }
 
-  createOrUpdate() {
+  createOrUpdate() async {
     this.selectedCategory.id == null
-        ? this.createCategory()
-        : this.updateCategory();
-    isLoading = false;
-    notifyListeners();
+        ? await this.createCategory()
+        : await this.updateCategory();
   }
 }

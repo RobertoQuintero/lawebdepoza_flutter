@@ -21,12 +21,8 @@ class CategoriesScreen extends StatelessWidget {
             },
             child: Icon(Icons.add),
           ),
-          body: ListView.builder(
-            // padding: EdgeInsets.symmetric(horizontal: 15),
-            itemCount: categoryService.categories.length,
-            itemBuilder: (BuildContext context, int index) {
-              return CategoryButton(categoryService.categories[index]);
-            },
+          body: _ScrollListView(
+            categoryService: categoryService,
           ),
         ),
         if (categoryService.isLoading)
@@ -42,6 +38,70 @@ class CategoriesScreen extends StatelessWidget {
   }
 }
 
+class _ScrollListView extends StatefulWidget {
+  final CategoryService categoryService;
+
+  const _ScrollListView({required this.categoryService});
+  @override
+  __ScrollListViewState createState() => __ScrollListViewState();
+}
+
+class __ScrollListViewState extends State<_ScrollListView> {
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels >
+          _scrollController.position.maxScrollExtent) {
+        widget.categoryService.getCategoriesByScrolling();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final categoryService = Provider.of<CategoryService>(context);
+    final size = MediaQuery.of(context).size;
+    return Container(
+      width: size.width,
+      height: size.height,
+      child: Stack(
+        children: [
+          ListView.builder(
+            physics: BouncingScrollPhysics(),
+            controller: _scrollController,
+            itemCount: categoryService.categories.length,
+            itemBuilder: (BuildContext context, int index) {
+              return CategoryButton(categoryService.categories[index]);
+            },
+          ),
+          if (categoryService.isLoadingScroll)
+            Positioned(
+                left: 0,
+                bottom: 0,
+                child: Container(
+                  color: Colors.white70,
+                  height: 80,
+                  width: size.width,
+                  child: Center(
+                      child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Theme.of(context).primaryColor)),
+                ))
+        ],
+      ),
+    );
+  }
+}
+
 class CategoryButton extends StatelessWidget {
   final Category category;
 
@@ -53,6 +113,7 @@ class CategoryButton extends StatelessWidget {
     return Column(
       children: [
         ListTile(
+          contentPadding: EdgeInsets.symmetric(vertical: 15, horizontal: 15),
           title: Text(category.name),
           leading: _TileIcon(
               category: category,
@@ -100,7 +161,7 @@ class _TileIcon extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-          padding: EdgeInsets.all(8),
+          padding: EdgeInsets.all(12),
           decoration: BoxDecoration(
               shape: BoxShape.circle,
               border: Border.all(color: color, width: 1)),
