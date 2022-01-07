@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lawebdepoza_mobile/models/place.dart';
 import 'package:lawebdepoza_mobile/screens/screens.dart';
 import 'package:lawebdepoza_mobile/services/services.dart';
 import 'package:lawebdepoza_mobile/widgets/widgets.dart';
@@ -40,9 +41,13 @@ class HomeScreen extends StatelessWidget {
               ))),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // productService.selectedProduct =
-          //     new Product(available: false, name: '', price: 0);
-          // Navigator.pushNamed(context, 'product');
+          placesService.selectedPlace = new Place(
+            name: '',
+            description: '',
+            address: '',
+          );
+
+          Navigator.pushNamed(context, 'add-place');
         },
         child: Icon(Icons.add),
       ),

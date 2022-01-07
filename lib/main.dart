@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lawebdepoza_mobile/screens/add_place_screen.dart';
 import 'package:provider/provider.dart';
 
 import 'package:lawebdepoza_mobile/screens/screens.dart';
@@ -36,7 +37,8 @@ class MyApp extends StatelessWidget {
         'checking': (_) => CheckAuthScreen(),
         'place': (_) => PlaceScreen(),
         'add-category': (_) => AddCategoryScreen(),
-        'categories': (_) => CategoriesScreen()
+        'categories': (_) => CategoriesScreen(),
+        'add-place': (_) => AddPlaceScreen()
       },
       scaffoldMessengerKey: NotificationsService.messengerKey,
       theme: ThemeData.light().copyWith(

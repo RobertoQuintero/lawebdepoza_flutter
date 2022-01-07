@@ -11,34 +11,34 @@ class Place {
     required this.name,
     required this.description,
     required this.address,
-    required this.coordinates,
+    this.coordinates,
     this.img,
     this.facebook,
     this.web,
-    required this.createdAt,
-    required this.updatedAt,
+    this.createdAt,
+    this.updatedAt,
     this.rating,
     this.totalRating,
     this.quantityVoting,
-    required this.category,
-    required this.user,
+    this.category,
+    this.user,
     this.id,
   });
 
   String name;
   String description;
   String address;
-  Coordinates coordinates;
+  Coordinates? coordinates;
   String? img;
   String? facebook;
   String? web;
-  DateTime createdAt;
-  DateTime updatedAt;
+  DateTime? createdAt;
+  DateTime? updatedAt;
   int? rating;
   int? totalRating;
   int? quantityVoting;
-  Category category;
-  String user;
+  Category? category;
+  String? user;
   String? id;
 
   factory Place.fromJson(String str) => Place.fromMap(json.decode(str));
@@ -67,16 +67,16 @@ class Place {
         "name": name,
         "description": description,
         "address": address,
-        "coordinates": coordinates.toMap(),
+        "coordinates": coordinates!.toMap(),
         'img': img,
         "facebook": facebook,
         "web": web,
-        "created_at": createdAt.toIso8601String(),
-        "updated_at": updatedAt.toIso8601String(),
+        "created_at": createdAt!.toIso8601String(),
+        "updated_at": updatedAt!.toIso8601String(),
         "rating": rating,
         "totalRating": totalRating,
         "quantityVoting": quantityVoting,
-        "category": category.toMap(),
+        "category": category!.toMap()['id'],
         "user": user,
         "_id": id,
       };

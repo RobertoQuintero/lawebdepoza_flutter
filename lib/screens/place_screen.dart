@@ -42,7 +42,7 @@ class PlaceScreen extends StatelessWidget {
                     style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
                   ),
                   Text(
-                    place.category.name,
+                    place.category!.name,
                     style: TextStyle(fontSize: 12, color: Colors.grey),
                   ),
                   SizedBox(
@@ -88,7 +88,7 @@ class PlaceScreen extends StatelessWidget {
                         width: 30,
                       ),
                       TextButton(
-                          onPressed: () => urlLauncherMap(place.coordinates),
+                          onPressed: () => urlLauncherMap(place.coordinates!),
                           child: Text(
                             'Mapa',
                             style: TextStyle(fontSize: 15, color: Colors.red),
