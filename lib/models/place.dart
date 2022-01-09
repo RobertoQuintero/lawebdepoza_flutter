@@ -10,16 +10,16 @@ class Place {
   Place({
     required this.name,
     required this.description,
-    required this.address,
-    this.coordinates,
     this.img,
-    this.facebook,
-    this.web,
+    required this.address,
+    required this.coordinates,
+    this.facebook = '',
+    this.web = '',
     this.createdAt,
     this.updatedAt,
-    this.rating,
-    this.totalRating,
-    this.quantityVoting,
+    this.rating = 0.01,
+    this.totalRating = 0.01,
+    this.quantityVoting = 0,
     this.category,
     this.user,
     this.id,
@@ -27,15 +27,15 @@ class Place {
 
   String name;
   String description;
-  String address;
-  Coordinates? coordinates;
   String? img;
-  String? facebook;
-  String? web;
+  String address;
+  Coordinates coordinates;
+  String facebook;
+  String web;
   DateTime? createdAt;
   DateTime? updatedAt;
-  int? rating;
-  int? totalRating;
+  double? rating;
+  double? totalRating;
   int? quantityVoting;
   Category? category;
   String? user;
@@ -48,15 +48,15 @@ class Place {
   factory Place.fromMap(Map<String, dynamic> json) => Place(
         name: json["name"],
         description: json["description"],
+        img: json["img"],
         address: json["address"],
         coordinates: Coordinates.fromMap(json["coordinates"]),
-        img: json['img'],
         facebook: json["facebook"],
         web: json["web"],
         createdAt: DateTime.parse(json["created_at"]),
         updatedAt: DateTime.parse(json["updated_at"]),
-        rating: json["rating"],
-        totalRating: json["totalRating"],
+        rating: json["rating"].toDouble(),
+        totalRating: json["totalRating"].toDouble(),
         quantityVoting: json["quantityVoting"],
         category: Category.fromMap(json["category"]),
         user: json["user"],
@@ -66,27 +66,23 @@ class Place {
   Map<String, dynamic> toMap() => {
         "name": name,
         "description": description,
+        "img": img,
         "address": address,
-        "coordinates": coordinates!.toMap(),
-        'img': img,
+        "coordinates": coordinates.toMap(),
         "facebook": facebook,
         "web": web,
-        "created_at": createdAt!.toIso8601String(),
         "updated_at": updatedAt!.toIso8601String(),
         "rating": rating,
         "totalRating": totalRating,
         "quantityVoting": quantityVoting,
-        "category": category!.toMap()['id'],
-        "user": user,
-        "_id": id,
+        "category": category!.toMap(),
       };
-
   Place copy() => Place(
         name: this.name,
         description: this.description,
+        img: this.img,
         address: this.address,
         coordinates: this.coordinates,
-        img: this.img,
         facebook: this.facebook,
         web: this.web,
         createdAt: this.createdAt,
@@ -115,8 +111,8 @@ class Coordinates {
   String toJson() => json.encode(toMap());
 
   factory Coordinates.fromMap(Map<String, dynamic> json) => Coordinates(
-        lat: json["lat"],
-        lng: json["lng"],
+        lat: json["lat"].toDouble(),
+        lng: json["lng"].toDouble(),
       );
 
   Map<String, dynamic> toMap() => {

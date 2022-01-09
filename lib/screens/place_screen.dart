@@ -67,7 +67,7 @@ class PlaceScreen extends StatelessWidget {
                     children: [
                       if (place.facebook != '')
                         TextButton(
-                            onPressed: () => urlLauncher(place.facebook!),
+                            onPressed: () => urlLauncher(place.facebook),
                             child: Text(
                               'facebook',
                               style:
@@ -78,7 +78,7 @@ class PlaceScreen extends StatelessWidget {
                       ),
                       if (place.web != '')
                         TextButton(
-                            onPressed: () => urlLauncher(place.web!),
+                            onPressed: () => urlLauncher(place.web),
                             child: Text(
                               'Sitio Web',
                               style:
@@ -88,7 +88,7 @@ class PlaceScreen extends StatelessWidget {
                         width: 30,
                       ),
                       TextButton(
-                          onPressed: () => urlLauncherMap(place.coordinates!),
+                          onPressed: () => urlLauncherMap(place.coordinates),
                           child: Text(
                             'Mapa',
                             style: TextStyle(fontSize: 15, color: Colors.red),

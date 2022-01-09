@@ -41,11 +41,9 @@ class HomeScreen extends StatelessWidget {
               ))),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
+          final coordinates = Coordinates(lat: 0, lng: 0);
           placesService.selectedPlace = new Place(
-            name: '',
-            description: '',
-            address: '',
-          );
+              name: '', description: '', address: '', coordinates: coordinates);
 
           Navigator.pushNamed(context, 'add-place');
         },
