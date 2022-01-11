@@ -2,6 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:lawebdepoza_mobile/helpers/determne_position.dart';
+import 'package:lawebdepoza_mobile/models/models.dart';
+import 'package:lawebdepoza_mobile/services/places_service.dart';
+import 'package:provider/provider.dart';
 
 class MapWidget extends StatefulWidget {
   @override
@@ -10,38 +14,49 @@ class MapWidget extends StatefulWidget {
 
 class MapWidgetState extends State<MapWidget> {
   Completer<GoogleMapController> _controller = Completer();
+  bool _isLoading = true;
+  late CameraPosition cameraPosition;
+  late LatLng coords;
 
-  static final CameraPosition _kGooglePlex = CameraPosition(
-    target: LatLng(37.42796133580664, -122.085749655962),
-    zoom: 14.4746,
-  );
+  @override
+  void initState() {
+    super.initState();
+    getPosition();
+  }
 
-  static final CameraPosition _kLake = CameraPosition(
-      bearing: 192.8334901395799,
-      target: LatLng(37.43296265331129, -122.08832357078792),
-      tilt: 59.440717697143555,
-      zoom: 19.151926040649414);
+  getPosition() async {
+    final location = await determinePosition();
+    coords = LatLng(
+      location.latitude,
+      location.longitude,
+    );
+    cameraPosition = CameraPosition(target: coords, zoom: 19);
+    _isLoading = false;
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-      body: GoogleMap(
-        mapType: MapType.normal,
-        initialCameraPosition: _kGooglePlex,
-        onMapCreated: (GoogleMapController controller) {
-          _controller.complete(controller);
-        },
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: _goToTheLake,
-        label: Text('To the lake!'),
-        icon: Icon(Icons.directions_boat),
-      ),
+    final placesService = Provider.of<PlacesService>(context);
+    if (_isLoading)
+      return Container(child: Center(child: CircularProgressIndicator()));
+    return GoogleMap(
+      mapType: MapType.normal,
+      initialCameraPosition: cameraPosition,
+      onMapCreated: (GoogleMapController controller) {
+        _controller.complete(controller);
+      },
+      markers: Set.from({
+        Marker(
+            markerId: MarkerId(coords.toString()),
+            draggable: true,
+            position: coords,
+            onDragEnd: (value) {
+              final coordinates =
+                  Coordinates(lat: value.latitude, lng: value.longitude);
+              placesService.selectedPlace.coordinates = coordinates;
+            })
+      }),
     );
-  }
-
-  Future<void> _goToTheLake() async {
-    final GoogleMapController controller = await _controller.future;
-    controller.animateCamera(CameraUpdate.newCameraPosition(_kLake));
   }
 }

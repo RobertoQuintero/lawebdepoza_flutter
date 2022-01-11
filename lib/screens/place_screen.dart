@@ -88,7 +88,7 @@ class PlaceScreen extends StatelessWidget {
                         width: 30,
                       ),
                       TextButton(
-                          onPressed: () => urlLauncherMap(place.coordinates),
+                          onPressed: () => urlLauncherMap(place.coordinates!),
                           child: Text(
                             'Mapa',
                             style: TextStyle(fontSize: 15, color: Colors.red),

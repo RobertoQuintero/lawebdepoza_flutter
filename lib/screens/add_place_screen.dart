@@ -81,9 +81,7 @@ class AddPlaceScreen extends StatelessWidget {
                         : 'Nombre muy corto';
                   },
                 ),
-                SizedBox(
-                  height: sizedboxHeight,
-                ),
+                SizedBox(height: sizedboxHeight),
                 TextFormField(
                   initialValue: place.address,
                   keyboardType: TextInputType.multiline,
@@ -97,6 +95,20 @@ class AddPlaceScreen extends StatelessWidget {
                         ? null
                         : 'Nombre muy corto';
                   },
+                ),
+                TextFormField(
+                  initialValue: place.facebook,
+                  decoration: InputDecorations.authInputDecoration(
+                      hintText: 'https://www.facebook...',
+                      labelText: 'Facebook'),
+                  onChanged: (value) => place.facebook = value,
+                ),
+                SizedBox(height: sizedboxHeight),
+                TextFormField(
+                  initialValue: place.web,
+                  decoration: InputDecorations.authInputDecoration(
+                      hintText: 'https://www...', labelText: 'Web'),
+                  onChanged: (value) => place.web = value,
                 ),
                 SizedBox(
                   height: sizedboxHeight,
@@ -133,7 +145,10 @@ class AddPlaceScreen extends StatelessWidget {
                 SizedBox(
                   height: sizedboxHeight + 15,
                 ),
-                _PickLocationRow()
+                _PickLocationRow(),
+                SizedBox(
+                  height: 80,
+                )
               ],
             ),
           ),
@@ -141,19 +156,26 @@ class AddPlaceScreen extends StatelessWidget {
   }
 }
 
-class _PickLocationRow extends StatelessWidget {
-  const _PickLocationRow({
-    Key? key,
-  }) : super(key: key);
+class _PickLocationRow extends StatefulWidget {
+  @override
+  __PickLocationRowState createState() => __PickLocationRowState();
+}
 
+class __PickLocationRowState extends State<_PickLocationRow> {
   @override
   Widget build(BuildContext context) {
+    final placesService = Provider.of<PlacesService>(context);
+    final place = placesService.selectedPlace;
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Container(
             width: 150,
-            child: Icon(Icons.pin_drop_outlined, color: Colors.grey, size: 60)),
+            child: Icon(Icons.pin_drop_outlined,
+                color: place.coordinates != null
+                    ? Theme.of(context).primaryColor
+                    : Colors.grey,
+                size: 60)),
         AppButton(
             width: 100,
             title: 'Maps',
@@ -161,7 +183,10 @@ class _PickLocationRow extends StatelessWidget {
               showModal(
                   context: context,
                   widget: MapWidget(),
-                  callback: () {},
+                  callback: () {
+                    setState(() {});
+                    Navigator.pop(context);
+                  },
                   title: 'Ubicación');
             })
       ],

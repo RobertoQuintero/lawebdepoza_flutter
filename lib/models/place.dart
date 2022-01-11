@@ -12,7 +12,7 @@ class Place {
     required this.description,
     this.img,
     required this.address,
-    required this.coordinates,
+    this.coordinates,
     this.facebook = '',
     this.web = '',
     this.createdAt,
@@ -29,7 +29,7 @@ class Place {
   String description;
   String? img;
   String address;
-  Coordinates coordinates;
+  Coordinates? coordinates;
   String facebook;
   String web;
   DateTime? createdAt;
@@ -68,7 +68,7 @@ class Place {
         "description": description,
         "img": img,
         "address": address,
-        "coordinates": coordinates.toMap(),
+        "coordinates": coordinates!.toMap(),
         "facebook": facebook,
         "web": web,
         "updated_at": updatedAt!.toIso8601String(),
