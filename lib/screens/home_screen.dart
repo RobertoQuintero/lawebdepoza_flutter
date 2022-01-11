@@ -28,6 +28,7 @@ class HomeScreen extends StatelessWidget {
         ],
       ),
       body: ListView.builder(
+          padding: EdgeInsets.only(left: 15, right: 15, top: 30),
           physics: BouncingScrollPhysics(),
           itemCount: placesService.places.length,
           itemBuilder: (BuildContext context, int index) => GestureDetector(

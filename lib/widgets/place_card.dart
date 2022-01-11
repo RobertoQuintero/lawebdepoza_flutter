@@ -8,7 +8,7 @@ class PlaceCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(left: 20, right: 20, top: 30, bottom: 50),
+      margin: EdgeInsets.only(bottom: 15),
       width: double.infinity,
       height: 400,
       decoration: _cardBorders(),

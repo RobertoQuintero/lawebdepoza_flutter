@@ -9,6 +9,7 @@ import 'package:http/http.dart' as http;
 class PlacesService extends ChangeNotifier {
   GlobalKey<FormState> formKey = new GlobalKey<FormState>();
   final String _baseUrl = 'lawebdepoza.herokuapp.com';
+  // final String _baseUrl = 'localhost:8081';
   final List<Place> places = [];
   late Place selectedPlace;
   late double total;
@@ -29,6 +30,7 @@ class PlacesService extends ChangeNotifier {
     notifyListeners();
     try {
       final url = Uri.https(_baseUrl, '/api/places');
+      // final url = Uri.https(_baseUrl, '/api/places');
       final resp = await http.get(url);
       final Map<String, dynamic> decodedData = json.decode(resp.body);
       for (var item in decodedData['places']) {
@@ -78,18 +80,20 @@ class PlacesService extends ChangeNotifier {
   Future postPlace() async {
     isSaving = true;
     notifyListeners();
-    selectedPlace.updatedAt = DateTime.now();
     try {
       final url = Uri.https(_baseUrl, '/api/places');
+      // final url = Uri.http(_baseUrl, '/api/places');
+      selectedPlace.updatedAt = DateTime.now();
       final resp = await http.post(url, body: selectedPlace.toJson(), headers: {
         'Content-Type': 'application/json',
         'x-token': await storage.read(key: 'token') ?? ''
       });
       final Map<String, dynamic> decodedData = json.decode(resp.body);
       print(decodedData);
+      // selectedPlace.updatedAt = decodedData['updated_at'];
       selectedPlace.id = decodedData['_id'];
       selectedPlace.user = decodedData['user'];
-      selectedPlace.createdAt = decodedData['createdAt'];
+      selectedPlace.createdAt = DateTime.parse(decodedData['created_at']);
       this.places.add(selectedPlace);
     } catch (e) {
       print('no');

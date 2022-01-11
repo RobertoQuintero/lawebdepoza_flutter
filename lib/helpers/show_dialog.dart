@@ -9,7 +9,7 @@ showModal(
       context: context,
       builder: (context) {
         return AlertDialog(
-            contentPadding: const EdgeInsets.all(15),
+            contentPadding: const EdgeInsets.all(10),
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20.0)),
             title: Text(

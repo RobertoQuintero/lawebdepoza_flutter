@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
+import 'package:lawebdepoza_mobile/helpers/show_dialog.dart';
 import 'package:lawebdepoza_mobile/models/category.dart';
 import 'package:lawebdepoza_mobile/services/services.dart';
 import 'package:lawebdepoza_mobile/ui/input_decorations.dart';
@@ -10,7 +11,7 @@ import 'package:provider/provider.dart';
 class AddPlaceScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final double sizedboxHeight = 10;
+    final double sizedboxHeight = 5;
     final placesService = Provider.of<PlacesService>(context);
     final categoryService = Provider.of<CategoryService>(context);
     final place = placesService.selectedPlace;
@@ -68,7 +69,7 @@ class AddPlaceScreen extends StatelessWidget {
                 TextFormField(
                   initialValue: place.description,
                   keyboardType: TextInputType.multiline,
-                  maxLines: 3,
+                  maxLines: 2,
                   decoration: InputDecorations.authInputDecoration(
                       hintText:
                           'En este negocio ofrecemos el mejor servicio...',
@@ -129,10 +130,42 @@ class AddPlaceScreen extends StatelessWidget {
                 _PickImageRow(
                   url: placesService.selectedPlace.img,
                 ),
+                SizedBox(
+                  height: sizedboxHeight + 15,
+                ),
+                _PickLocationRow()
               ],
             ),
           ),
         ));
+  }
+}
+
+class _PickLocationRow extends StatelessWidget {
+  const _PickLocationRow({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Container(
+            width: 150,
+            child: Icon(Icons.pin_drop_outlined, color: Colors.grey, size: 60)),
+        AppButton(
+            width: 100,
+            title: 'Maps',
+            onPressed: () {
+              showModal(
+                  context: context,
+                  widget: MapWidget(),
+                  callback: () {},
+                  title: 'Ubicación');
+            })
+      ],
+    );
   }
 }
 
@@ -144,7 +177,7 @@ class _PickImageRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final placesService = Provider.of<PlacesService>(context);
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         ClipRRect(
           borderRadius: BorderRadius.all(Radius.circular(150)),

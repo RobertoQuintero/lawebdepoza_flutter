@@ -1,4 +1,4 @@
-package com.example.lawebdepoza_mobile
+package com.robertoquintero.lawebdepoza_mobile
 
 import io.flutter.embedding.android.FlutterActivity
 

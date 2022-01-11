@@ -13,6 +13,7 @@ class CategoryService extends ChangeNotifier {
   bool _isLoadingScroll = false;
   bool _isLoading = false;
   String _baseUrl = 'lawebdepoza.herokuapp.com';
+  // String _baseUrl = 'localhost:8081';
 
   bool get isLoading => this._isLoading;
   set isLoading(bool value) {
