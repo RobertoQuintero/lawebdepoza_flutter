@@ -7,7 +7,7 @@ class PlaceScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final placesService = Provider.of<PlacesService>(context);
-    final place = placesService.selectedPlace;
+    final place = placesService.place;
     final size = MediaQuery.of(context).size;
     final width = size.width;
     final height = size.height * .5;
@@ -22,6 +22,15 @@ class PlaceScreen extends StatelessWidget {
               height: height,
               fit: BoxFit.cover,
               image: NetworkImage(place.img!)),
+        ),
+        Container(
+          width: width,
+          height: height,
+          decoration: BoxDecoration(
+              gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [Colors.black.withOpacity(.6), Colors.transparent])),
         ),
         ListView(
           physics: BouncingScrollPhysics(),
@@ -100,6 +109,37 @@ class PlaceScreen extends StatelessWidget {
             ),
           ],
         ),
+        Positioned(
+          top: 30,
+          child: Container(
+            width: size.width,
+            padding: EdgeInsets.only(left: 5, right: 10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                IconButton(
+                  onPressed: () => Navigator.pop(context),
+                  icon: Icon(
+                    Icons.arrow_back,
+                    color: Colors.white,
+                    size: 30,
+                  ),
+                ),
+                IconButton(
+                  onPressed: () {
+                    placesService.selectedPlace = place.copy();
+                    Navigator.pushNamed(context, 'add-place');
+                  },
+                  icon: Icon(
+                    Icons.edit,
+                    color: Colors.white,
+                    size: 30,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        )
       ],
     ));
   }

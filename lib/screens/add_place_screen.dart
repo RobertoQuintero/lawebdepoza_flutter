@@ -15,144 +15,178 @@ class AddPlaceScreen extends StatelessWidget {
     final placesService = Provider.of<PlacesService>(context);
     final categoryService = Provider.of<CategoryService>(context);
     final place = placesService.selectedPlace;
-    return Scaffold(
-        appBar: AppBar(
-          title: Text('Agregar Categoría'),
-        ),
-        floatingActionButton: FloatingActionButton(
-          child: placesService.isSaving
-              ? CircularProgressIndicator(
-                  color: Colors.white,
-                )
-              : Icon(Icons.add),
-          onPressed: placesService.isSaving
-              ? null
-              : () async {
-                  if (!placesService.isValidForm()) return;
-                  if (placesService.newPictureFile == null ||
-                      placesService.selectedPlace.category == null) {
-                    NotificationsService.showSnackbar(
-                        'Faltan campos por cubrir');
-                    return;
-                  }
-                  final String? imageUrl = await placesService.uploadImage();
-                  if (imageUrl != null)
-                    placesService.selectedPlace.img = imageUrl;
-                  print(imageUrl);
-                  await placesService.postPlace();
-                  Navigator.pop(context);
-                },
-        ),
-        body: SingleChildScrollView(
-          physics: BouncingScrollPhysics(),
-          padding: EdgeInsets.only(left: 15, top: 15, right: 15),
-          child: Form(
-            key: placesService.formKey,
-            autovalidateMode: AutovalidateMode.onUserInteraction,
-            child: Column(
-              children: [
-                TextFormField(
-                  initialValue: place.name,
-                  autocorrect: false,
-                  decoration: InputDecorations.authInputDecoration(
-                      hintText: 'Sopes el Texano...', labelText: 'Nombre'),
-                  onChanged: (value) => place.name = value,
-                  validator: (value) {
-                    return value != null && value.length > 2
-                        ? null
-                        : 'Nombre muy corto';
-                  },
-                ),
-                SizedBox(
-                  height: sizedboxHeight,
-                ),
-                TextFormField(
-                  initialValue: place.description,
-                  keyboardType: TextInputType.multiline,
-                  maxLines: 2,
-                  decoration: InputDecorations.authInputDecoration(
-                      hintText:
-                          'En este negocio ofrecemos el mejor servicio...',
-                      labelText: 'Descripción'),
-                  onChanged: (value) => place.description = value,
-                  validator: (value) {
-                    return value != null && value.length > 2
-                        ? null
-                        : 'Nombre muy corto';
-                  },
-                ),
-                SizedBox(height: sizedboxHeight),
-                TextFormField(
-                  initialValue: place.address,
-                  keyboardType: TextInputType.multiline,
-                  maxLines: 2,
-                  decoration: InputDecorations.authInputDecoration(
-                      hintText: 'Calle 20 Nov, col. Cazones...',
-                      labelText: 'Dirección'),
-                  onChanged: (value) => place.address = value,
-                  validator: (value) {
-                    return value != null && value.length > 2
-                        ? null
-                        : 'Nombre muy corto';
-                  },
-                ),
-                TextFormField(
-                  initialValue: place.facebook,
-                  decoration: InputDecorations.authInputDecoration(
-                      hintText: 'https://www.facebook...',
-                      labelText: 'Facebook'),
-                  onChanged: (value) => place.facebook = value,
-                ),
-                SizedBox(height: sizedboxHeight),
-                TextFormField(
-                  initialValue: place.web,
-                  decoration: InputDecorations.authInputDecoration(
-                      hintText: 'https://www...', labelText: 'Web'),
-                  onChanged: (value) => place.web = value,
-                ),
-                SizedBox(
-                  height: sizedboxHeight,
-                ),
-                if (categoryService.isLoading)
-                  Container(
-                    height: 80,
-                    width: double.infinity,
-                    child: Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                  ),
-                SizedBox(
-                  height: sizedboxHeight,
-                ),
-                Row(
-                  children: [
-                    Text(
-                      'Categoría',
-                      style: TextStyle(fontSize: 16, color: Colors.grey[500]),
-                    ),
-                    SizedBox(
-                      width: 25,
-                    ),
-                    CategoryDropdownButton(categoryService.categories),
-                  ],
-                ),
-                SizedBox(
-                  height: sizedboxHeight,
-                ),
-                _PickImageRow(
-                  url: placesService.selectedPlace.img,
-                ),
-                SizedBox(
-                  height: sizedboxHeight + 15,
-                ),
-                _PickLocationRow(),
-                SizedBox(
-                  height: 80,
-                )
+    return Stack(
+      children: [
+        Scaffold(
+            appBar: AppBar(
+              title: Text(
+                  place.id == null ? 'Agregar Lugar ' : 'Actualizar Lugar'),
+              actions: [
+                place.id == null
+                    ? Container()
+                    : IconButton(
+                        onPressed: () {
+                          showModal(
+                              context: context,
+                              widget: Text(
+                                '¿Desea eliminar este registro?',
+                                textAlign: TextAlign.center,
+                              ),
+                              callback: () async {
+                                Navigator.pop(context);
+                                final resp = await placesService.deletePlace();
+                                if (resp != null) {
+                                  NotificationsService.showSnackbar(resp);
+                                } else {
+                                  Navigator.pushReplacementNamed(
+                                      context, 'home');
+                                }
+                              },
+                              title: 'Eliminar');
+                        },
+                        icon: Icon(Icons.delete))
               ],
             ),
-          ),
-        ));
+            floatingActionButton: FloatingActionButton(
+              child: placesService.isSaving
+                  ? CircularProgressIndicator(
+                      color: Colors.white,
+                    )
+                  : Icon(Icons.add),
+              onPressed: placesService.isSaving
+                  ? null
+                  : () async {
+                      if (!placesService.isValidForm()) return;
+                      if (placesService.selectedPlace.img == null ||
+                          placesService.selectedPlace.category == null) {
+                        NotificationsService.showSnackbar(
+                            'Faltan campos por cubrir');
+                        return;
+                      }
+                      await placesService.createOrUpdate();
+                      Navigator.pop(context);
+                    },
+            ),
+            body: SingleChildScrollView(
+              physics: BouncingScrollPhysics(),
+              padding: EdgeInsets.only(left: 15, top: 15, right: 15),
+              child: Form(
+                key: placesService.formKey,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                child: Column(
+                  children: [
+                    TextFormField(
+                      initialValue: place.name,
+                      autocorrect: false,
+                      decoration: InputDecorations.authInputDecoration(
+                          hintText: 'Sopes el Texano...', labelText: 'Nombre'),
+                      onChanged: (value) => place.name = value,
+                      validator: (value) {
+                        return value != null && value.length > 2
+                            ? null
+                            : 'Nombre muy corto';
+                      },
+                    ),
+                    SizedBox(
+                      height: sizedboxHeight,
+                    ),
+                    TextFormField(
+                      initialValue: place.description,
+                      keyboardType: TextInputType.multiline,
+                      maxLines: 2,
+                      decoration: InputDecorations.authInputDecoration(
+                          hintText:
+                              'En este negocio ofrecemos el mejor servicio...',
+                          labelText: 'Descripción'),
+                      onChanged: (value) => place.description = value,
+                      validator: (value) {
+                        return value != null && value.length > 2
+                            ? null
+                            : 'Nombre muy corto';
+                      },
+                    ),
+                    SizedBox(height: sizedboxHeight),
+                    TextFormField(
+                      initialValue: place.address,
+                      keyboardType: TextInputType.multiline,
+                      maxLines: 2,
+                      decoration: InputDecorations.authInputDecoration(
+                          hintText: 'Calle 20 Nov, col. Cazones...',
+                          labelText: 'Dirección'),
+                      onChanged: (value) => place.address = value,
+                      validator: (value) {
+                        return value != null && value.length > 2
+                            ? null
+                            : 'Nombre muy corto';
+                      },
+                    ),
+                    TextFormField(
+                      initialValue: place.facebook,
+                      decoration: InputDecorations.authInputDecoration(
+                          hintText: 'https://www.facebook...',
+                          labelText: 'Facebook'),
+                      onChanged: (value) => place.facebook = value,
+                    ),
+                    SizedBox(height: sizedboxHeight),
+                    TextFormField(
+                      initialValue: place.web,
+                      decoration: InputDecorations.authInputDecoration(
+                          hintText: 'https://www...', labelText: 'Web'),
+                      onChanged: (value) => place.web = value,
+                    ),
+                    SizedBox(
+                      height: sizedboxHeight,
+                    ),
+                    if (categoryService.isLoading)
+                      Container(
+                        height: 80,
+                        width: double.infinity,
+                        child: Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                      ),
+                    SizedBox(
+                      height: sizedboxHeight,
+                    ),
+                    Row(
+                      children: [
+                        Text(
+                          'Categoría',
+                          style:
+                              TextStyle(fontSize: 16, color: Colors.grey[500]),
+                        ),
+                        SizedBox(
+                          width: 25,
+                        ),
+                        CategoryDropdownButton(categoryService.categories),
+                      ],
+                    ),
+                    SizedBox(
+                      height: sizedboxHeight,
+                    ),
+                    _PickImageRow(
+                      url: place.img,
+                    ),
+                    SizedBox(
+                      height: sizedboxHeight + 15,
+                    ),
+                    _PickLocationRow(),
+                    SizedBox(
+                      height: 80,
+                    )
+                  ],
+                ),
+              ),
+            )),
+        if (placesService.isLoading)
+          Container(
+            width: double.infinity,
+            height: double.infinity,
+            color: Colors.white.withOpacity(.6),
+            child: Center(child: CircularProgressIndicator()),
+          )
+      ],
+    );
   }
 }
 

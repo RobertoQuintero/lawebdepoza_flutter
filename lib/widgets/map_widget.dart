@@ -30,6 +30,8 @@ class MapWidgetState extends State<MapWidget> {
       location.latitude,
       location.longitude,
     );
+    Provider.of<PlacesService>(context, listen: false).coordinates =
+        Coordinates(lat: location.latitude, lng: location.longitude);
     cameraPosition = CameraPosition(target: coords, zoom: 19);
     _isLoading = false;
     setState(() {});
@@ -54,7 +56,7 @@ class MapWidgetState extends State<MapWidget> {
             onDragEnd: (value) {
               final coordinates =
                   Coordinates(lat: value.latitude, lng: value.longitude);
-              placesService.selectedPlace.coordinates = coordinates;
+              placesService.coordinates = coordinates;
             })
       }),
     );

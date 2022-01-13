@@ -33,8 +33,7 @@ class HomeScreen extends StatelessWidget {
           itemCount: placesService.places.length,
           itemBuilder: (BuildContext context, int index) => GestureDetector(
               onTap: () {
-                placesService.selectedPlace =
-                    placesService.places[index].copy();
+                placesService.place = placesService.places[index];
                 Navigator.pushNamed(context, 'place');
               },
               child: PlaceCard(
