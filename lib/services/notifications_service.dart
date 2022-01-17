@@ -6,6 +6,8 @@ class NotificationsService {
 
   static showSnackbar(String message) {
     final snackBar = new SnackBar(
+        behavior: SnackBarBehavior.floating,
+        backgroundColor: Colors.indigo,
         content: Text(message,
             textAlign: TextAlign.center,
             style: TextStyle(color: Colors.white, fontSize: 14)));

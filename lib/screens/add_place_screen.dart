@@ -251,7 +251,7 @@ class _PickImageRow extends StatelessWidget {
           onPressed: () async {
             final ImagePicker _picker = ImagePicker();
             final XFile? pickedFile = await _picker.pickImage(
-                source: ImageSource.camera, imageQuality: 100, maxWidth: 400);
+                source: ImageSource.gallery, imageQuality: 100, maxWidth: 400);
 
             if (pickedFile == null) {
               print('No seleccionó nada');
