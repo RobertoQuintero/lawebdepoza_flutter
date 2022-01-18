@@ -54,12 +54,19 @@ class PlacesService extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<String?> uploadImage(Uri url) async {
+  Future<String?> uploadImage(Uri url, String verb) async {
     if (this.newPictureFile == null) return null;
     this.isSaving = true;
     notifyListeners();
+    final Map<String, String> headers = {
+      'x-token': await storage.read(key: 'token') ?? ''
+    };
 
-    final imageUploadRequest = http.MultipartRequest('PUT', url);
+    final imageUploadRequest = http.MultipartRequest(
+      verb,
+      url,
+    );
+    imageUploadRequest.headers.addAll(headers);
     final file =
         await http.MultipartFile.fromPath('file', newPictureFile!.path);
     imageUploadRequest.files.add(file);
@@ -71,8 +78,9 @@ class PlacesService extends ChangeNotifier {
     }
     this.newPictureFile = null;
     final decodedData = json.decode(resp.body);
-    selectedPlace.img = decodedData['secure_url'];
-    return decodedData['secure_url'];
+
+    selectedPlace.img = decodedData['url'];
+    return decodedData['url'];
   }
 
   Future postPlace() async {
@@ -122,15 +130,22 @@ class PlacesService extends ChangeNotifier {
 
   Future createOrUpdate() async {
     if (selectedPlace.id == null) {
-      final url = Uri.parse(
-          'https://api.cloudinary.com/v1_1/la-de-poza/image/upload?upload_preset=c1pm5w71');
-      await uploadImage(url);
+      final url = Uri.parse('https://$_baseUrl/api/uploads');
+      await uploadImage(url, 'POST');
       await postPlace();
     } else {
-      final url = Uri.parse(
-          'https://api.cloudinary.com/v1_1/la-de-poza/image/upload?upload_preset=c1pm5w71');
       if (!selectedPlace.img!.startsWith('https')) {
-        await uploadImage(url);
+        final imageArr = this
+            .places
+            .firstWhere((element) => element.id == selectedPlace.id)
+            .img!
+            .split('/');
+        final image = imageArr[imageArr.length - 1];
+        final nameArr = image.split('.');
+        final name = nameArr[0];
+
+        final url = Uri.parse('https://$_baseUrl/api/uploads/$name');
+        await uploadImage(url, 'PUT');
       }
       await updatePlace();
     }
