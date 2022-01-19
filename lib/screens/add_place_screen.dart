@@ -249,21 +249,82 @@ class _PickImageRow extends StatelessWidget {
         AppButton(
           title: 'Imagen',
           onPressed: () async {
-            final ImagePicker _picker = ImagePicker();
-            final XFile? pickedFile = await _picker.pickImage(
-                source: ImageSource.gallery, imageQuality: 100, maxWidth: 400);
-
-            if (pickedFile == null) {
-              print('No seleccionó nada');
-              return;
-            }
-            print('Tenemos imagen ${pickedFile.path}');
-            placesService.updateSelectedPlaceImage(pickedFile.path);
+            FocusManager.instance.primaryFocus?.unfocus();
+            showModalBottomSheet(
+                backgroundColor: Colors.transparent,
+                context: context,
+                builder: (BuildContext context) => Container(
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(25),
+                              topRight: Radius.circular(25))),
+                      padding: EdgeInsets.all(15),
+                      height: 200,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          GestureDetector(
+                            onTap: () async {
+                              Navigator.pop(context);
+                              await setImage(ImageSource.camera, placesService);
+                            },
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.camera_alt,
+                                    size: 60,
+                                    color: Theme.of(context).primaryColor),
+                                Text('Cámara',
+                                    style: TextStyle(
+                                        color: Theme.of(context).primaryColor,
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold)),
+                              ],
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () async {
+                              Navigator.pop(context);
+                              await setImage(
+                                  ImageSource.gallery, placesService);
+                            },
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.photo,
+                                    size: 60,
+                                    color: Theme.of(context).primaryColor),
+                                Text('Galería',
+                                    style: TextStyle(
+                                        color: Theme.of(context).primaryColor,
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold)),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ));
           },
           width: 100,
         )
       ],
     );
+  }
+
+  Future setImage(ImageSource source, PlacesService placesService) async {
+    final ImagePicker _picker = ImagePicker();
+    final XFile? pickedFile = await _picker.pickImage(
+        source: source, imageQuality: 100, maxWidth: 500);
+
+    if (pickedFile == null) {
+      print('No seleccionó nada');
+      return;
+    }
+    print('Tenemos imagen ${pickedFile.path}');
+    placesService.updateSelectedPlaceImage(pickedFile.path);
   }
 
   Widget getImage(String? picture) {
