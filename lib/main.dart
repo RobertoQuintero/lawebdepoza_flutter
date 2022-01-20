@@ -16,6 +16,7 @@ class AppState extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => ProductsService()),
         ChangeNotifierProvider(create: (_) => PlacesService()),
         ChangeNotifierProvider(create: (_) => CategoryService()),
+        ChangeNotifierProvider(create: (_) => UsersService()),
       ],
       child: MyApp(),
     );
@@ -27,7 +28,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Productos App',
+      title: 'Lugares App',
       initialRoute: 'checking',
       routes: {
         'login': (_) => LoginScreen(),
@@ -38,7 +39,8 @@ class MyApp extends StatelessWidget {
         'place': (_) => PlaceScreen(),
         'add-category': (_) => AddCategoryScreen(),
         'categories': (_) => CategoriesScreen(),
-        'add-place': (_) => AddPlaceScreen()
+        'add-place': (_) => AddPlaceScreen(),
+        'users': (_) => UsersScreen()
       },
       scaffoldMessengerKey: NotificationsService.messengerKey,
       theme: ThemeData.light().copyWith(

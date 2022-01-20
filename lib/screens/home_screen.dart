@@ -23,6 +23,9 @@ class HomeScreen extends StatelessWidget {
             icon: Icon(Icons.login_outlined)),
         actions: [
           IconButton(
+              onPressed: () => Navigator.pushNamed(context, 'users'),
+              icon: Icon(Icons.person)),
+          IconButton(
               onPressed: () => Navigator.pushNamed(context, 'categories'),
               icon: Icon(Icons.add_box)),
         ],

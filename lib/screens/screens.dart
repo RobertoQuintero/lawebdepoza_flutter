@@ -7,3 +7,4 @@ export 'package:lawebdepoza_mobile/screens/register_screen.dart';
 export 'package:lawebdepoza_mobile/screens/place_screen.dart';
 export 'package:lawebdepoza_mobile/screens/add_category_screen.dart';
 export 'package:lawebdepoza_mobile/screens/categories_screen.dart';
+export 'package:lawebdepoza_mobile/screens/users_screen.dart';

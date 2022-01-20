@@ -89,15 +89,11 @@ class CategoryService extends ChangeNotifier {
       return;
     }
     isLoadingScroll = true;
-    print(total);
-    print(this.categories.length);
     try {
       final url = Uri.https(_baseUrl, '/api/categories',
           {'from': '${this.categories.length}', 'limit': '5'});
       final resp = await http.get(url);
       final Map<String, dynamic> decodedData = json.decode(resp.body);
-      print(decodedData);
-      print('hola');
       if (decodedData.containsKey('categories')) {
         decodedData['categories'].forEach((item) {
           final tempCategory = Category.fromMap(item);
