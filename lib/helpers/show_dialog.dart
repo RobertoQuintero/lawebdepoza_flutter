@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-showModal(
+Future showModal(
     {required BuildContext context,
     required Widget widget,
     required VoidCallback callback,
     required String title}) {
-  showDialog(
+  return showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
