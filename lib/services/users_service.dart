@@ -27,8 +27,8 @@ class UsersService extends ChangeNotifier {
     notifyListeners();
   }
 
-  isAdmin(String uid) {
-    if (uid == 'ADMIN_ROLE' || uid == 'SUPER_ADMIN_ROLE') {
+  isAdmin(String role) {
+    if (role == 'ADMIN_ROLE' || role == 'SUPER_ADMIN_ROLE') {
       return true;
     }
     return false;

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:lawebdepoza_mobile/helpers/determne_position.dart';
 import 'package:lawebdepoza_mobile/models/models.dart';
+import 'package:lawebdepoza_mobile/services/notifications_service.dart';
 import 'package:lawebdepoza_mobile/services/places_service.dart';
 import 'package:provider/provider.dart';
 
@@ -25,16 +26,21 @@ class MapWidgetState extends State<MapWidget> {
   }
 
   getPosition() async {
-    final location = await determinePosition();
-    coords = LatLng(
-      location.latitude,
-      location.longitude,
-    );
-    Provider.of<PlacesService>(context, listen: false).coordinates =
-        Coordinates(lat: location.latitude, lng: location.longitude);
-    cameraPosition = CameraPosition(target: coords, zoom: 19);
-    _isLoading = false;
-    setState(() {});
+    try {
+      final location = await determinePosition();
+      coords = LatLng(
+        location.latitude,
+        location.longitude,
+      );
+      Provider.of<PlacesService>(context, listen: false).coordinates =
+          Coordinates(lat: location.latitude, lng: location.longitude);
+      cameraPosition = CameraPosition(target: coords, zoom: 19);
+      _isLoading = false;
+      setState(() {});
+    } catch (e) {
+      NotificationsService.showSnackbar('Ubicación está deshabilitada');
+      Navigator.pop(context);
+    }
   }
 
   @override
